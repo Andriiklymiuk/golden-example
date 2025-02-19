@@ -1,0 +1,404 @@
+{
+  "info": {
+    "name": "Recipes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "default-api-key-123",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "recipeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "List Recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Recipes have correct structure', function() {",
+              "    const response = pm.response.json();",
+              "    if (response.length > 0) {",
+              "        const recipe = response[0];",
+              "        pm.expect(recipe).to.have.property('id');",
+              "        pm.expect(recipe).to.have.property('userId');",
+              "        pm.expect(recipe).to.have.property('title');",
+              "        pm.expect(recipe).to.have.property('ingredients');",
+              "        pm.expect(recipe.ingredients).to.be.an('array');",
+              "        pm.expect(recipe).to.have.property('instructions');",
+              "        pm.expect(recipe).to.have.property('createdAt');",
+              "        pm.expect(recipe).to.have.property('updatedAt');",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search Recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes?q=pasta",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "pasta"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Search results are filtered correctly', function() {",
+              "    const response = pm.response.json();",
+              "    response.forEach(recipe => {",
+              "        const searchTerm = 'pasta';",
+              "        const matchesTitle = recipe.title.toLowerCase().includes(searchTerm);",
+              "        const matchesIngredients = recipe.ingredients.some(ing => ",
+              "            ing.toLowerCase().includes(searchTerm)",
+              "        );",
+              "        pm.expect(matchesTitle || matchesIngredients).to.be.true;",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User's Recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes?userId={{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('All recipes belong to the specified user', function() {",
+              "    const response = pm.response.json();",
+              "    const userId = pm.collectionVariables.get('userId');",
+              "    response.forEach(recipe => {",
+              "        pm.expect(recipe.userId).to.equal(userId);",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Recipe",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"title\": \"Spaghetti Carbonara\",\n    \"ingredients\": [\"spaghetti\", \"eggs\", \"pecorino cheese\", \"guanciale\", \"black pepper\"],\n    \"instructions\": \"1. Cook pasta\\n2. Prepare sauce\\n3. Mix and serve\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function() {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has correct recipe data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('id');",
+              "    pm.expect(response.userId).to.equal(pm.collectionVariables.get('userId'));",
+              "    pm.expect(response.title).to.equal('Spaghetti Carbonara');",
+              "    pm.expect(response.ingredients).to.be.an('array').that.includes('spaghetti');",
+              "    pm.expect(response).to.have.property('instructions');",
+              "    pm.expect(response).to.have.property('createdAt');",
+              "    pm.expect(response).to.have.property('updatedAt');",
+              "    pm.collectionVariables.set('recipeId', response.id);",
+              "});",
+              "",
+              "pm.test('CreatedAt and UpdatedAt are valid dates', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(new Date(response.createdAt).getTime()).to.be.above(0);",
+              "    pm.expect(new Date(response.updatedAt).getTime()).to.be.above(0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Recipe",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipeId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has correct recipe data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response.id).to.equal(pm.collectionVariables.get('recipeId'));",
+              "    pm.expect(response.userId).to.equal(pm.collectionVariables.get('userId'));",
+              "    pm.expect(response).to.have.property('title');",
+              "    pm.expect(response).to.have.property('ingredients');",
+              "    pm.expect(response.ingredients).to.be.an('array');",
+              "    pm.expect(response).to.have.property('instructions');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Recipe",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipeId}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"title\": \"Updated Carbonara\",\n    \"ingredients\": [\"spaghetti\", \"eggs\", \"pecorino cheese\", \"pancetta\", \"black pepper\"],\n    \"instructions\": \"1. Cook pasta al dente\\n2. Prepare sauce\\n3. Combine and serve immediately\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has updated recipe data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response.id).to.equal(pm.collectionVariables.get('recipeId'));",
+              "    pm.expect(response.title).to.equal('Updated Carbonara');",
+              "    pm.expect(response.ingredients).to.include('pancetta');",
+              "});",
+              "",
+              "pm.test('UpdatedAt is more recent than creation', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(new Date(response.updatedAt)).to.be.above(new Date(response.createdAt));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Recipe",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipeId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has success message', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('message');",
+              "    pm.expect(response.message).to.equal('Recipe deleted successfully');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

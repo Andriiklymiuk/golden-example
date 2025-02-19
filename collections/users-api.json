@@ -1,0 +1,337 @@
+{
+  "info": {
+    "name": "Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "default-api-key-123",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "List Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Users have correct structure', function() {",
+              "    const response = pm.response.json();",
+              "    if (response.length > 0) {",
+              "        const user = response[0];",
+              "        pm.expect(user).to.have.property('id');",
+              "        pm.expect(user).to.have.property('name');",
+              "        pm.expect(user).to.have.property('email');",
+              "        pm.expect(user).to.have.property('createdAt');",
+              "        pm.expect(user).to.have.property('updatedAt');",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users?q=john",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "john"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Search results are filtered correctly', function() {",
+              "    const response = pm.response.json();",
+              "    response.forEach(user => {",
+              "        const searchTerm = 'john';",
+              "        const matchesName = user.name.toLowerCase().includes(searchTerm);",
+              "        const matchesEmail = user.email.toLowerCase().includes(searchTerm);",
+              "        pm.expect(matchesName || matchesEmail).to.be.true;",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function() {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has correct user data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('id');",
+              "    pm.expect(response.name).to.equal('John Doe');",
+              "    pm.expect(response.email).to.equal('john@example.com');",
+              "    pm.expect(response).to.have.property('createdAt');",
+              "    pm.expect(response).to.have.property('updatedAt');",
+              "    pm.collectionVariables.set('userId', response.id);",
+              "});",
+              "",
+              "pm.test('CreatedAt and UpdatedAt are valid dates', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(new Date(response.createdAt).getTime()).to.be.above(0);",
+              "    pm.expect(new Date(response.updatedAt).getTime()).to.be.above(0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has correct user data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response.id).to.equal(pm.collectionVariables.get('userId'));",
+              "    pm.expect(response).to.have.property('name');",
+              "    pm.expect(response).to.have.property('email');",
+              "    pm.expect(response).to.have.property('createdAt');",
+              "    pm.expect(response).to.have.property('updatedAt');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"John Updated\",\n    \"email\": \"john.updated@example.com\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has updated user data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response.id).to.equal(pm.collectionVariables.get('userId'));",
+              "    pm.expect(response.name).to.equal('John Updated');",
+              "    pm.expect(response.email).to.equal('john.updated@example.com');",
+              "});",
+              "",
+              "pm.test('UpdatedAt is more recent than creation', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(new Date(response.updatedAt)).to.be.above(new Date(response.createdAt));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has success message', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('message');",
+              "    pm.expect(response.message).to.equal('User deleted successfully');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
