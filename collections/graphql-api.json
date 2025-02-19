@@ -1,0 +1,399 @@
+{
+  "info": {
+    "name": "GraphQL API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "0"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetUsers($query: String) {\n  users(query: $query) {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    recipes {\n      id\n      title\n    }\n  }\n}",
+                "variables": {
+                  "query": ""
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    recipes {\n      id\n      title\n      ingredients\n      instructions\n    }\n  }\n}",
+                "variables": {
+                  "id": "test-user-123"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateUser($input: CreateUserInput!) {\n  createUser(input: $input) {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n  }\n}",
+                "variables": {
+                  "input": {
+                    "name": "John Doe",
+                    "email": "john@example.com"
+                  }
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {\n  updateUser(id: $id, input: $input) {\n    id\n    name\n    email\n    updatedAt\n  }\n}",
+                "variables": {
+                  "id": "test-user-123",
+                  "input": {
+                    "name": "John Updated",
+                    "email": "john.updated@example.com"
+                  }
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation DeleteUser($id: ID!) {\n  deleteUser(id: $id)\n}",
+                "variables": {
+                  "id": "test-user-123"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "item": [
+        {
+          "name": "Get All Recipes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetRecipes($userId: ID, $query: String) {\n  recipes(userId: $userId, query: $query) {\n    id\n    title\n    ingredients\n    instructions\n    createdAt\n    updatedAt\n    user {\n      id\n      name\n    }\n  }\n}",
+                "variables": {
+                  "userId": null,
+                  "query": ""
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Recipe by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetRecipe($id: ID!) {\n  recipe(id: $id) {\n    id\n    title\n    ingredients\n    instructions\n    createdAt\n    updatedAt\n    user {\n      id\n      name\n    }\n  }\n}",
+                "variables": {
+                  "id": "recipe-123"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateRecipe($input: CreateRecipeInput!) {\n  createRecipe(input: $input) {\n    id\n    title\n    ingredients\n    instructions\n    createdAt\n    user {\n      id\n      name\n    }\n  }\n}",
+                "variables": {
+                  "input": {
+                    "userId": "test-user-123",
+                    "title": "Spaghetti Carbonara",
+                    "ingredients": [
+                      "Spaghetti",
+                      "Eggs",
+                      "Pecorino Romano",
+                      "Guanciale",
+                      "Black Pepper"
+                    ],
+                    "instructions": "1. Cook pasta...\n2. Prepare sauce...\n3. Mix and serve"
+                  }
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateRecipe($id: ID!, $input: UpdateRecipeInput!) {\n  updateRecipe(id: $id, input: $input) {\n    id\n    title\n    ingredients\n    instructions\n    updatedAt\n  }\n}",
+                "variables": {
+                  "id": "recipe-123",
+                  "input": {
+                    "title": "Updated Carbonara",
+                    "ingredients": [
+                      "Spaghetti",
+                      "Fresh Eggs",
+                      "Aged Pecorino Romano",
+                      "Premium Guanciale",
+                      "Freshly Ground Black Pepper"
+                    ],
+                    "instructions": "Updated cooking instructions..."
+                  }
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{API_KEY}}"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation DeleteRecipe($id: ID!) {\n  deleteRecipe(id: $id)\n}",
+                "variables": {
+                  "id": "recipe-123"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/graphql",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "API_KEY",
+      "value": "your-api-key-here"
+    }
+  ]
+}
