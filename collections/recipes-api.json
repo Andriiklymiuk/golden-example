@@ -27,7 +27,7 @@
   ],
   "item": [
     {
-      "name": "List Recipes",
+      "name": "List Recipes - Initial",
       "request": {
         "method": "GET",
         "header": [
@@ -60,98 +60,8 @@
               "pm.test('Response is an array', function() {",
               "    const response = pm.response.json();",
               "    pm.expect(response).to.be.an('array');",
-              "});"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "Search Recipes",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "x-api-key",
-            "value": "{{apiKey}}",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/recipes?q=pasta",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "recipes"
-          ],
-          "query": [
-            {
-              "key": "q",
-              "value": "pasta"
-            }
-          ]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status code is 200', function() {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test('Response is an array', function() {",
-              "    const response = pm.response.json();",
-              "    pm.expect(response).to.be.an('array');",
-              "});"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "Get User's Recipes",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "x-api-key",
-            "value": "{{apiKey}}",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/recipes?userId=test-user-123",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "recipes"
-          ],
-          "query": [
-            {
-              "key": "userId",
-              "value": "test-user-123"
-            }
-          ]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status code is 200', function() {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test('Response is an array', function() {",
-              "    const response = pm.response.json();",
-              "    pm.expect(response).to.be.an('array');",
+              "    // Store initial count for later comparison",
+              "    pm.environment.set('initialRecipeCount', response.length);",
               "});"
             ]
           }
@@ -185,7 +95,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"userId\": \"test-user-123\",\n    \"title\": \"Spaghetti Carbonara\",\n    \"ingredients\": [\"spaghetti\", \"eggs\", \"pecorino cheese\", \"guanciale\", \"black pepper\"],\n    \"instructions\": \"1. Cook pasta\\n2. Prepare sauce\\n3. Mix and serve\"\n}"
+          "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"title\": \"Spaghetti Carbonara\",\n    \"ingredients\": [\"spaghetti\", \"eggs\", \"pecorino cheese\", \"guanciale\", \"black pepper\"],\n    \"instructions\": \"1. Cook pasta\\n2. Prepare sauce\\n3. Mix and serve\"\n}"
         }
       },
       "event": [
@@ -201,8 +111,13 @@
               "pm.test('Response has correct recipe data', function() {",
               "    const response = pm.response.json();",
               "    pm.expect(response).to.have.property('id');",
+              "    // Set the recipeId variable for subsequent requests",
+              "    pm.environment.set('recipeId', response.id);",
               "    pm.collectionVariables.set('recipeId', response.id);",
-              "});"
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Get Recipe');"
             ]
           }
         }
@@ -238,7 +153,123 @@
             "exec": [
               "pm.test('Status code is 200', function() {",
               "    pm.response.to.have.status(200);",
-              "});"
+              "});",
+              "",
+              "pm.test('Recipe has correct data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('id');",
+              "    pm.expect(response.id).to.equal(pm.environment.get('recipeId'));",
+              "    pm.expect(response.title).to.equal('Spaghetti Carbonara');",
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Search Recipes');"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search Recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes?q=carbonara",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "carbonara"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array with our recipe', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "    ",
+              "    // Check if our created recipe is in the search results",
+              "    const found = response.some(recipe => recipe.id === pm.environment.get('recipeId'));",
+              "    pm.expect(found).to.be.true;",
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Get User\\'s Recipes');"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User's Recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes?userId={{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array with user\\'s recipes', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "    ",
+              "    // Check if our created recipe is in the user's recipes",
+              "    const found = response.some(recipe => recipe.id === pm.environment.get('recipeId'));",
+              "    pm.expect(found).to.be.true;",
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Update Recipe');"
             ]
           }
         }
@@ -272,7 +303,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"userId\": \"test-user-123\",\n    \"title\": \"Updated Carbonara\",\n    \"ingredients\": [\"spaghetti\", \"eggs\", \"pecorino cheese\", \"pancetta\", \"black pepper\"],\n    \"instructions\": \"1. Cook pasta al dente\\n2. Prepare sauce\\n3. Combine and serve immediately\"\n}"
+          "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"title\": \"Updated Carbonara\",\n    \"ingredients\": [\"spaghetti\", \"eggs\", \"pecorino cheese\", \"pancetta\", \"black pepper\"],\n    \"instructions\": \"1. Cook pasta al dente\\n2. Prepare sauce\\n3. Combine and serve immediately\"\n}"
         }
       },
       "event": [
@@ -283,7 +314,64 @@
             "exec": [
               "pm.test('Status code is 200', function() {",
               "    pm.response.to.have.status(200);",
-              "});"
+              "});",
+              "",
+              "pm.test('Recipe was updated correctly', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('id');",
+              "    pm.expect(response.id).to.equal(pm.environment.get('recipeId'));",
+              "    pm.expect(response.title).to.equal('Updated Carbonara');",
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Verify Updated Recipe');"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verify Updated Recipe",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipeId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Recipe has updated data', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.have.property('id');",
+              "    pm.expect(response.id).to.equal(pm.environment.get('recipeId'));",
+              "    pm.expect(response.title).to.equal('Updated Carbonara');",
+              "    pm.expect(response.ingredients).to.include('pancetta');",
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Delete Recipe');"
             ]
           }
         }
@@ -319,7 +407,107 @@
             "exec": [
               "pm.test('Status code is 200', function() {",
               "    pm.response.to.have.status(200);",
-              "});"
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Verify Deletion');"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verify Deletion",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipeId}}"
+          ],
+          "query": []
+        },
+        "body": {}
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Recipe should be deleted (404)', function() {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "// Automatically move to the next request",
+              "postman.setNextRequest('Verify DB Cleanup');"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verify DB Cleanup",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/recipes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Recipe count should be back to initial state', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('array');",
+              "    ",
+              "    // Compare with initial count to ensure we're back to where we started",
+              "    const initialCount = parseInt(pm.environment.get('initialRecipeCount') || '0');",
+              "    pm.expect(response.length).to.equal(initialCount);",
+              "    ",
+              "    // Verify our specific recipe is not there",
+              "    const found = response.some(recipe => recipe.id === pm.environment.get('recipeId'));",
+              "    pm.expect(found).to.be.false;",
+              "});",
+              "",
+              "// Clean up environment variables",
+              "pm.environment.unset('recipeId');",
+              "pm.environment.unset('initialRecipeCount');",
+              "",
+              "// End the collection run",
+              "postman.setNextRequest(null);"
             ]
           }
         }

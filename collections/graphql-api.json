@@ -158,11 +158,13 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "x-api-key",
-                "value": "{{API_KEY}}"
+                "value": "{{API_KEY}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -170,7 +172,7 @@
               "graphql": {
                 "query": "mutation DeleteUser($id: ID!) {\n  deleteUser(id: $id)\n}",
                 "variables": {
-                  "id": "test-user-123"
+                  "id": "test-user-1231"
                 }
               }
             },
@@ -181,7 +183,8 @@
               ],
               "path": [
                 "graphql"
-              ]
+              ],
+              "query": []
             }
           }
         }
