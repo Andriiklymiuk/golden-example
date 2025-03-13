@@ -40,7 +40,39 @@
                 "graphql"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has users data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('users');",
+                  "    pm.expect(response.data.users).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('User objects have correct structure', function() {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data.users.length > 0) {",
+                  "        const user = response.data.users[0];",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('name');",
+                  "        pm.expect(user).to.have.property('email');",
+                  "        pm.expect(user).to.have.property('createdAt');",
+                  "        pm.expect(user).to.have.property('updatedAt');",
+                  "        pm.expect(user).to.have.property('recipes');",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get User by ID",
@@ -74,7 +106,38 @@
                 "graphql"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('user');",
+                  "    pm.expect(response.data.user).to.be.an('object');",
+                  "    pm.expect(response.data.user.id).to.equal('test-user-123');",
+                  "});",
+                  "",
+                  "pm.test('User has correct structure', function() {",
+                  "    const user = pm.response.json().data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('name');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('createdAt');",
+                  "    pm.expect(user).to.have.property('updatedAt');",
+                  "    pm.expect(user).to.have.property('recipes');",
+                  "    pm.expect(user.recipes).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Create User",
@@ -83,11 +146,13 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "x-api-key",
-                "value": "{{API_KEY}}"
+                "value": "{{API_KEY}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -109,9 +174,34 @@
               ],
               "path": [
                 "graphql"
-              ]
+              ],
+              "query": []
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('User created successfully', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('createUser');",
+                  "    const user = response.data.createUser;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user.name).to.equal('John Doe');",
+                  "    pm.expect(user.email).to.equal('john@example.com');",
+                  "    pm.collectionVariables.set('createdUserId', user.id);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ]
         },
         {
           "name": "Update User",
@@ -120,11 +210,13 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "x-api-key",
-                "value": "{{API_KEY}}"
+                "value": "{{API_KEY}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -147,9 +239,33 @@
               ],
               "path": [
                 "graphql"
-              ]
+              ],
+              "query": []
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('User updated successfully', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('updateUser');",
+                  "    const user = response.data.updateUser;",
+                  "    pm.expect(user.id).to.equal('test-user-123');",
+                  "    pm.expect(user.name).to.equal('John Updated');",
+                  "    pm.expect(user.email).to.equal('john.updated@example.com');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ]
         },
         {
           "name": "Delete User",
@@ -186,7 +302,21 @@
               ],
               "query": []
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ]
         }
       ]
     },
@@ -226,7 +356,40 @@
                 "graphql"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has recipes data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('recipes');",
+                  "    pm.expect(response.data.recipes).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Recipe objects have correct structure', function() {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data.recipes.length > 0) {",
+                  "        const recipe = response.data.recipes[0];",
+                  "        pm.expect(recipe).to.have.property('id');",
+                  "        pm.expect(recipe).to.have.property('title');",
+                  "        pm.expect(recipe).to.have.property('ingredients');",
+                  "        pm.expect(recipe).to.have.property('instructions');",
+                  "        pm.expect(recipe).to.have.property('createdAt');",
+                  "        pm.expect(recipe).to.have.property('updatedAt');",
+                  "        pm.expect(recipe).to.have.property('user');",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get Recipe by ID",
@@ -260,7 +423,38 @@
                 "graphql"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has recipe data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('recipe');",
+                  "    pm.expect(response.data.recipe).to.be.an('object');",
+                  "    pm.expect(response.data.recipe.id).to.equal('recipe-123');",
+                  "});",
+                  "",
+                  "pm.test('Recipe has correct structure', function() {",
+                  "    const recipe = pm.response.json().data.recipe;",
+                  "    pm.expect(recipe).to.have.property('id');",
+                  "    pm.expect(recipe).to.have.property('title');",
+                  "    pm.expect(recipe).to.have.property('ingredients');",
+                  "    pm.expect(recipe).to.have.property('instructions');",
+                  "    pm.expect(recipe).to.have.property('createdAt');",
+                  "    pm.expect(recipe).to.have.property('updatedAt');",
+                  "    pm.expect(recipe).to.have.property('user');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Create Recipe",
@@ -305,7 +499,37 @@
                 "graphql"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Recipe created successfully', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('createRecipe');",
+                  "    const recipe = response.data.createRecipe;",
+                  "    pm.expect(recipe).to.have.property('id');",
+                  "    pm.expect(recipe.title).to.equal('Spaghetti Carbonara');",
+                  "    pm.expect(recipe.ingredients).to.be.an('array');",
+                  "    pm.expect(recipe.instructions).to.be.a('string');",
+                  "    pm.collectionVariables.set('createdRecipeId', recipe.id);",
+                  "});",
+                  "",
+                  "pm.test('Recipe data matches input', function() {",
+                  "    const recipe = pm.response.json().data.createRecipe;",
+                  "    pm.expect(recipe.ingredients).to.have.lengthOf(5);",
+                  "    pm.expect(recipe.user.id).to.equal('test-user-123');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Update Recipe",
@@ -314,11 +538,13 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "x-api-key",
-                "value": "{{API_KEY}}"
+                "value": "{{API_KEY}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -348,9 +574,34 @@
               ],
               "path": [
                 "graphql"
-              ]
+              ],
+              "query": []
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Recipe updated successfully', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('updateRecipe');",
+                  "    const recipe = response.data.updateRecipe;",
+                  "    pm.expect(recipe.id).to.equal('recipe-123');",
+                  "    pm.expect(recipe.title).to.equal('Updated Carbonara');",
+                  "    pm.expect(recipe.ingredients).to.have.lengthOf(5);",
+                  "    pm.expect(recipe.instructions).to.equal('Updated cooking instructions...');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ]
         },
         {
           "name": "Delete Recipe",
@@ -359,11 +610,13 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "x-api-key",
-                "value": "{{API_KEY}}"
+                "value": "{{API_KEY}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -371,7 +624,7 @@
               "graphql": {
                 "query": "mutation DeleteRecipe($id: ID!) {\n  deleteRecipe(id: $id)\n}",
                 "variables": {
-                  "id": "recipe-123"
+                  "id": "recipe-1234"
                 }
               }
             },
@@ -382,9 +635,24 @@
               ],
               "path": [
                 "graphql"
-              ]
+              ],
+              "query": []
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ]
         }
       ]
     }
