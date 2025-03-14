@@ -198,9 +198,12 @@ The API documentation is automatically generated from the route definitions usin
 
 ### Testing
 
-Included Postman collections for testing:
-- `users-collection.json`: Tests for user endpoints
-- `recipes-collection.json`: Tests for recipe endpoints
+Included Postman collections with requests covered by tests:
+- `users-api.json`: user endpoints
+- `recipes-api.json`: recipe endpoints
+- `graphql-api.json`: users and recipes graphql methods
+- `fake-api.json`: collection of different api endpoints for fake data 
+
 
 Import these collections into Postman to test the API endpoints.
 

@@ -1,0 +1,1368 @@
+{
+  "info": {
+    "name": "Fake APIs Collection",
+    "description": "A collection of requests for various free fake API services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "jsonPlaceholderUrl",
+      "value": "https://jsonplaceholder.typicode.com",
+      "type": "string"
+    },
+    {
+      "key": "randomUserUrl",
+      "value": "https://randomuser.me/api",
+      "type": "string"
+    },
+    {
+      "key": "reqresUrl",
+      "value": "https://reqres.in/api",
+      "type": "string"
+    },
+    {
+      "key": "dummyJsonUrl",
+      "value": "https://dummyjson.com",
+      "type": "string"
+    },
+    {
+      "key": "mockyUrl",
+      "value": "https://run.mocky.io/v3",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "postId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reqresUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "dummyJsonUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "dummyJsonProductId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "mockyResponseId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pokemonName",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pokemonId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "JSONPlaceholder",
+      "description": "A free fake REST API with endpoints for users, posts, comments, etc.",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jsonPlaceholderUrl}}/users",
+              "host": [
+                "{{jsonPlaceholderUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Response contains users', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.length).to.be.above(0);",
+                  "    const user = response[0];",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('name');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.collectionVariables.set('userId', user.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Single User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jsonPlaceholderUrl}}/users/{{userId}}",
+              "host": [
+                "{{jsonPlaceholderUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.id.toString()).to.equal(pm.collectionVariables.get('userId'));",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('email');",
+                  "    pm.expect(response).to.have.property('address');",
+                  "    pm.expect(response).to.have.property('phone');",
+                  "    pm.expect(response).to.have.property('website');",
+                  "    pm.expect(response).to.have.property('company');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jsonPlaceholderUrl}}/users/{{userId}}/posts",
+              "host": [
+                "{{jsonPlaceholderUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "posts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array of posts', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.be.an('array');",
+                  "    if (response.length > 0) {",
+                  "        const post = response[0];",
+                  "        pm.expect(post).to.have.property('userId');",
+                  "        pm.expect(post).to.have.property('id');",
+                  "        pm.expect(post).to.have.property('title');",
+                  "        pm.expect(post).to.have.property('body');",
+                  "        pm.collectionVariables.set('postId', post.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Post Title\",\n  \"body\": \"This is the body of the post.\",\n  \"userId\": {{userId}}\n}"
+            },
+            "url": {
+              "raw": "{{jsonPlaceholderUrl}}/posts",
+              "host": [
+                "{{jsonPlaceholderUrl}}"
+              ],
+              "path": [
+                "posts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has created post data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('title');",
+                  "    pm.expect(response).to.have.property('body');",
+                  "    pm.expect(response).to.have.property('userId');",
+                  "    pm.expect(response.title).to.equal('New Post Title');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{postId}},\n  \"title\": \"Updated Post Title\",\n  \"body\": \"This is the updated body of the post.\",\n  \"userId\": {{userId}}\n}"
+            },
+            "url": {
+              "raw": "{{jsonPlaceholderUrl}}/posts/{{postId}}",
+              "host": [
+                "{{jsonPlaceholderUrl}}"
+              ],
+              "path": [
+                "posts",
+                "{{postId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has updated post data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('title');",
+                  "    pm.expect(response.title).to.equal('Updated Post Title');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{jsonPlaceholderUrl}}/posts/{{postId}}",
+              "host": [
+                "{{jsonPlaceholderUrl}}"
+              ],
+              "path": [
+                "posts",
+                "{{postId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Random User Generator",
+      "description": "Generates random user data including names, emails, profile pictures, etc.",
+      "item": [
+        {
+          "name": "Get Random User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{randomUserUrl}}",
+              "host": [
+                "{{randomUserUrl}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('results');",
+                  "    pm.expect(response.results).to.be.an('array');",
+                  "    pm.expect(response.results.length).to.equal(1);",
+                  "    ",
+                  "    const user = response.results[0];",
+                  "    pm.expect(user).to.have.property('name');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('picture');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Multiple Random Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{randomUserUrl}}?results=5",
+              "host": [
+                "{{randomUserUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "results",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains multiple users', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('results');",
+                  "    pm.expect(response.results).to.be.an('array');",
+                  "    pm.expect(response.results.length).to.equal(5);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Specific Gender",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{randomUserUrl}}?gender=female",
+              "host": [
+                "{{randomUserUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "gender",
+                  "value": "female"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains female user', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('results');",
+                  "    pm.expect(response.results).to.be.an('array');",
+                  "    pm.expect(response.results.length).to.be.above(0);",
+                  "    ",
+                  "    const user = response.results[0];",
+                  "    pm.expect(user).to.have.property('gender');",
+                  "    pm.expect(user.gender).to.equal('female');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Specific Nationality",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{randomUserUrl}}?nat=us,gb",
+              "host": [
+                "{{randomUserUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "nat",
+                  "value": "us,gb"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains user with correct nationality', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('results');",
+                  "    pm.expect(response.results).to.be.an('array');",
+                  "    pm.expect(response.results.length).to.be.above(0);",
+                  "    ",
+                  "    const user = response.results[0];",
+                  "    pm.expect(user).to.have.property('nat');",
+                  "    pm.expect(['us', 'gb']).to.include(user.nat.toLowerCase());",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reqres",
+      "description": "A hosted REST API that provides fake user data with registration and login endpoints",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reqresUrl}}/users?page=1",
+              "host": [
+                "{{reqresUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains paginated users', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('page');",
+                  "    pm.expect(response).to.have.property('per_page');",
+                  "    pm.expect(response).to.have.property('total');",
+                  "    pm.expect(response).to.have.property('data');",
+                  "    pm.expect(response.data).to.be.an('array');",
+                  "    ",
+                  "    if(response.data.length > 0) {",
+                  "        const user = response.data[0];",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('email');",
+                  "        pm.expect(user).to.have.property('first_name');",
+                  "        pm.expect(user).to.have.property('last_name');",
+                  "        pm.expect(user).to.have.property('avatar');",
+                  "        ",
+                  "        pm.collectionVariables.set('reqresUserId', user.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Single User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reqresUrl}}/users/{{reqresUserId}}",
+              "host": [
+                "{{reqresUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{reqresUserId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('data');",
+                  "    ",
+                  "    const user = response.data;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user.id.toString()).to.equal(pm.collectionVariables.get('reqresUserId'));",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('first_name');",
+                  "    pm.expect(user).to.have.property('last_name');",
+                  "    pm.expect(user).to.have.property('avatar');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Jane Smith\",\n    \"job\": \"Software Developer\"\n}"
+            },
+            "url": {
+              "raw": "{{reqresUrl}}/users",
+              "host": [
+                "{{reqresUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response contains created user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('job');",
+                  "    pm.expect(response).to.have.property('createdAt');",
+                  "    ",
+                  "    pm.expect(response.name).to.equal('Jane Smith');",
+                  "    pm.expect(response.job).to.equal('Software Developer');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Jane Johnson\",\n    \"job\": \"Senior Developer\"\n}"
+            },
+            "url": {
+              "raw": "{{reqresUrl}}/users/{{reqresUserId}}",
+              "host": [
+                "{{reqresUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{reqresUserId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains updated user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('job');",
+                  "    pm.expect(response).to.have.property('updatedAt');",
+                  "    ",
+                  "    pm.expect(response.name).to.equal('Jane Johnson');",
+                  "    pm.expect(response.job).to.equal('Senior Developer');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"eve.holt@reqres.in\",\n    \"password\": \"pistol\"\n}"
+            },
+            "url": {
+              "raw": "{{reqresUrl}}/register",
+              "host": [
+                "{{reqresUrl}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains token', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('token');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"eve.holt@reqres.in\",\n    \"password\": \"cityslicka\"\n}"
+            },
+            "url": {
+              "raw": "{{reqresUrl}}/login",
+              "host": [
+                "{{reqresUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains token', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('token');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DummyJSON",
+      "description": "Provides fake data for e-commerce applications including users, products, carts, etc.",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dummyJsonUrl}}/products",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains product data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('products');",
+                  "    pm.expect(response).to.have.property('total');",
+                  "    pm.expect(response).to.have.property('limit');",
+                  "    pm.expect(response.products).to.be.an('array');",
+                  "    ",
+                  "    if(response.products.length > 0) {",
+                  "        const product = response.products[0];",
+                  "        pm.expect(product).to.have.property('id');",
+                  "        pm.expect(product).to.have.property('title');",
+                  "        pm.expect(product).to.have.property('description');",
+                  "        pm.expect(product).to.have.property('price');",
+                  "        pm.expect(product).to.have.property('brand');",
+                  "        pm.expect(product).to.have.property('category');",
+                  "        ",
+                  "        pm.collectionVariables.set('dummyJsonProductId', product.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Single Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dummyJsonUrl}}/products/{{dummyJsonProductId}}",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{dummyJsonProductId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains product data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response.id.toString()).to.equal(pm.collectionVariables.get('dummyJsonProductId'));",
+                  "    pm.expect(response).to.have.property('title');",
+                  "    pm.expect(response).to.have.property('description');",
+                  "    pm.expect(response).to.have.property('price');",
+                  "    pm.expect(response).to.have.property('brand');",
+                  "    pm.expect(response).to.have.property('category');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dummyJsonUrl}}/products/search?q=phone",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "phone"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains search results', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('products');",
+                  "    pm.expect(response).to.have.property('total');",
+                  "    pm.expect(response).to.have.property('limit');",
+                  "    ",
+                  "    const products = response.products;",
+                  "    pm.expect(products).to.be.an('array');",
+                  "    ",
+                  "    // Check if search results contain the search term in title or description",
+                  "    if(products.length > 0) {",
+                  "        const product = products[0];",
+                  "        const searchTerm = 'phone';",
+                  "        const matchesTitle = product.title.toLowerCase().includes(searchTerm);",
+                  "        const matchesDescription = product.description.toLowerCase().includes(searchTerm);",
+                  "        pm.expect(matchesTitle || matchesDescription).to.be.true;",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dummyJsonUrl}}/users",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('users');",
+                  "    pm.expect(response.users).to.be.an('array');",
+                  "    ",
+                  "    if(response.users.length > 0) {",
+                  "        const user = response.users[0];",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('firstName');",
+                  "        pm.expect(user).to.have.property('lastName');",
+                  "        pm.expect(user).to.have.property('email');",
+                  "        ",
+                  "        pm.collectionVariables.set('dummyJsonUserId', user.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Single User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dummyJsonUrl}}/users/{{dummyJsonUserId}}",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{dummyJsonUserId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains user data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response.id.toString()).to.equal(pm.collectionVariables.get('dummyJsonUserId'));",
+                  "    pm.expect(response).to.have.property('firstName');",
+                  "    pm.expect(response).to.have.property('lastName');",
+                  "    pm.expect(response).to.have.property('email');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dummyJsonUrl}}/users/{{dummyJsonUserId}}/carts",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{dummyJsonUserId}}",
+                "carts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains cart data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('carts');",
+                  "    pm.expect(response.carts).to.be.an('array');",
+                  "    ",
+                  "    if(response.carts.length > 0) {",
+                  "        const cart = response.carts[0];",
+                  "        pm.expect(cart).to.have.property('id');",
+                  "        pm.expect(cart).to.have.property('products');",
+                  "        pm.expect(cart).to.have.property('total');",
+                  "        pm.collectionVariables.set('dummyJsonCartId', cart.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add New Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "title": "New Product",
+                "description": "A new test product",
+                "price": 499,
+                "brand": "Test Brand",
+                "category": "test"
+              }
+            },
+            "url": {
+              "raw": "{{dummyJsonUrl}}/products/add",
+              "host": [
+                "{{dummyJsonUrl}}"
+              ],
+              "path": [
+                "products",
+                "add"
+              ],
+              "query": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response contains added product data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('title');",
+                  "    pm.expect(response.title).to.equal('New Product');",
+                  "    pm.expect(response).to.have.property('price');",
+                  "    pm.expect(response.price).to.equal(499);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PokéAPI",
+      "description": "A RESTful API for Pokémon data",
+      "item": [
+        {
+          "name": "Get Pokémon List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0",
+              "host": [
+                "pokeapi",
+                "co"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "pokemon"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains pokemon list', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('results');",
+                  "    pm.expect(response.results).to.be.an('array');",
+                  "    pm.expect(response).to.have.property('count');",
+                  "    pm.expect(response).to.have.property('next');",
+                  "    ",
+                  "    if(response.results.length > 0) {",
+                  "        const pokemon = response.results[0];",
+                  "        pm.expect(pokemon).to.have.property('name');",
+                  "        pm.expect(pokemon).to.have.property('url');",
+                  "        ",
+                  "        // Store the name of the first pokemon for later requests",
+                  "        pm.collectionVariables.set('pokemonName', pokemon.name);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Single Pokémon",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://pokeapi.co/api/v2/pokemon/{{pokemonName}}",
+              "host": [
+                "pokeapi",
+                "co"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "pokemon",
+                "{{pokemonName}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains pokemon data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response.name).to.equal(pm.collectionVariables.get('pokemonName'));",
+                  "    pm.expect(response).to.have.property('height');",
+                  "    pm.expect(response).to.have.property('weight');",
+                  "    pm.expect(response).to.have.property('types');",
+                  "    pm.expect(response).to.have.property('abilities');",
+                  "    ",
+                  "    // Store the pokemon ID for later requests",
+                  "    pm.collectionVariables.set('pokemonId', response.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Pokémon Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://pokeapi.co/api/v2/type/1",
+              "host": [
+                "pokeapi",
+                "co"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "type",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains type data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('damage_relations');",
+                  "    pm.expect(response).to.have.property('pokemon');",
+                  "    pm.expect(response.pokemon).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Pokémon Species",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://pokeapi.co/api/v2/pokemon-species/{{pokemonId}}",
+              "host": [
+                "pokeapi",
+                "co"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "pokemon-species",
+                "{{pokemonId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains species data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response.id.toString()).to.equal(pm.collectionVariables.get('pokemonId'));",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('flavor_text_entries');",
+                  "    pm.expect(response).to.have.property('genera');",
+                  "    pm.expect(response).to.have.property('evolution_chain');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Pokémon Ability",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://pokeapi.co/api/v2/ability/1",
+              "host": [
+                "pokeapi",
+                "co"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "ability",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains ability data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('effect_entries');",
+                  "    pm.expect(response).to.have.property('pokemon');",
+                  "    pm.expect(response.pokemon).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
