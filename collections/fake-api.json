@@ -69,6 +69,22 @@
       "key": "pokemonId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "SPACEX_BASE_URL",
+      "value": "https://spacex-production.up.railway.app/"
+    },
+    {
+      "key": "launchId",
+      "value": ""
+    },
+    {
+      "key": "missionName",
+      "value": ""
+    },
+    {
+      "key": "rocketId",
+      "value": ""
     }
   ],
   "item": [
@@ -1356,6 +1372,428 @@
                   "    pm.expect(response).to.have.property('effect_entries');",
                   "    pm.expect(response).to.have.property('pokemon');",
                   "    pm.expect(response.pokemon).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Specex GraphQL Api",
+      "item": [
+        {
+          "name": "Get Past Launches",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetPastLaunches($limit: Int!) {\n  launchesPast(limit: $limit) {\n    id\n    mission_name\n    launch_date_local\n    launch_site {\n      site_name_long\n    }\n    rocket {\n      rocket_name\n      rocket_type\n    }\n    ships {\n      name\n      home_port\n    }\n    links {\n      article_link\n      video_link\n    }\n  }\n}",
+                "variables": {
+                  "limit": 5
+                }
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has launches data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('launchesPast');",
+                  "    pm.expect(response.data.launchesPast).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Launch objects have correct structure', function() {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data.launchesPast.length > 0) {",
+                  "        const launch = response.data.launchesPast[0];",
+                  "        pm.expect(launch).to.have.property('id');",
+                  "        pm.expect(launch).to.have.property('mission_name');",
+                  "        pm.expect(launch).to.have.property('launch_date_local');",
+                  "        pm.expect(launch).to.have.property('launch_site');",
+                  "        pm.expect(launch).to.have.property('rocket');",
+                  "        pm.expect(launch).to.have.property('links');",
+                  "        pm.collectionVariables.set('launchId', launch.id);",
+                  "        pm.collectionVariables.set('missionName', launch.mission_name);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Launch By ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetLaunch($id: ID!) {\n  launch(id: $id) {\n    id\n    mission_name\n    details\n    launch_date_local\n    launch_success\n    launch_site {\n      site_name\n      site_name_long\n    }\n    rocket {\n      rocket_name\n      rocket_type\n      rocket {\n        company\n        country\n        description\n      }\n    }\n    links {\n      article_link\n      video_link\n      flickr_images\n    }\n  }\n}",
+                "variables": {
+                  "id": "{{launchId}}"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has launch data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('launch');",
+                  "    pm.expect(response.data.launch).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('Launch has correct structure', function() {",
+                  "    const launch = pm.response.json().data.launch;",
+                  "    pm.expect(launch).to.have.property('id');",
+                  "    pm.expect(launch.id).to.equal(pm.collectionVariables.get('launchId'));",
+                  "    pm.expect(launch).to.have.property('mission_name');",
+                  "    pm.expect(launch).to.have.property('launch_date_local');",
+                  "    pm.expect(launch).to.have.property('launch_site');",
+                  "    pm.expect(launch).to.have.property('rocket');",
+                  "    pm.expect(launch).to.have.property('links');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Launches By Mission Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query SearchLaunches($missionName: String!) {\n  launches(find: {mission_name: $missionName}) {\n    id\n    mission_name\n    details\n    launch_date_local\n    launch_success\n    rocket {\n      rocket_name\n    }\n    links {\n      article_link\n      video_link\n    }\n  }\n}",
+                "variables": {
+                  "missionName": "{{missionName}}"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains mission search results', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('launches');",
+                  "    pm.expect(response.data.launches).to.be.an('array');",
+                  "    ",
+                  "    if(response.data.launches.length > 0) {",
+                  "        const launch = response.data.launches[0];",
+                  "        pm.expect(launch).to.have.property('mission_name');",
+                  "        pm.expect(launch.mission_name.toLowerCase()).to.include(pm.collectionVariables.get('missionName').toLowerCase());",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Upcoming Launches",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  launchesUpcoming(limit: 5) {\n    id\n    mission_name\n    launch_date_local\n    launch_site {\n      site_name_long\n    }\n    rocket {\n      rocket_name\n    }\n    links {\n      article_link\n      video_link\n    }\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has upcoming launches data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('launchesUpcoming');",
+                  "    pm.expect(response.data.launchesUpcoming).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Rockets",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetRockets {\n  rockets {\n    id\n    name\n    type\n    active\n    country\n    company\n    description\n    first_flight\n    success_rate_pct\n    cost_per_launch\n    height {\n      meters\n      feet\n    }\n    diameter {\n      meters\n      feet\n    }\n    mass {\n      kg\n      lb\n    }\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has rockets data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('rockets');",
+                  "    pm.expect(response.data.rockets).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Rocket objects have correct structure', function() {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data.rockets.length > 0) {",
+                  "        const rocket = response.data.rockets[0];",
+                  "        pm.expect(rocket).to.have.property('id');",
+                  "        pm.expect(rocket).to.have.property('name');",
+                  "        pm.expect(rocket).to.have.property('type');",
+                  "        pm.expect(rocket).to.have.property('active');",
+                  "        pm.expect(rocket).to.have.property('company');",
+                  "        pm.expect(rocket).to.have.property('description');",
+                  "        pm.collectionVariables.set('rocketId', rocket.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Company Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  company {\n    name\n    founder\n    founded\n    employees\n    vehicles\n    launch_sites\n    test_sites\n    ceo\n    cto\n    coo\n    cto_propulsion\n    valuation\n    headquarters {\n      address\n      city\n      state\n    }\n    links {\n      website\n      flickr\n      twitter\n      elon_twitter\n    }\n    summary\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has company data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('company');",
+                  "    pm.expect(response.data.company).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('Company has correct structure', function() {",
+                  "    const company = pm.response.json().data.company;",
+                  "    pm.expect(company).to.have.property('name');",
+                  "    pm.expect(company).to.have.property('founder');",
+                  "    pm.expect(company).to.have.property('founded');",
+                  "    pm.expect(company).to.have.property('employees');",
+                  "    pm.expect(company).to.have.property('headquarters');",
+                  "    pm.expect(company).to.have.property('summary');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Mission and Rocket Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetMissionAndRocket($missionName: String!, $rocketId: ID!) {\n  launches(find: {mission_name: $missionName}) {\n    mission_name\n    launch_date_local\n    launch_success\n    details\n  }\n  rocket(id: $rocketId) {\n    name\n    type\n    description\n    success_rate_pct\n  }\n}",
+                "variables": {
+                  "missionName": "{{missionName}}",
+                  "rocketId": "{{rocketId}}"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has launches and rocket data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('launches');",
+                  "    pm.expect(response.data).to.have.property('rocket');",
+                  "    pm.expect(response.data.launches).to.be.an('array');",
+                  "    pm.expect(response.data.rocket).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Company and Past Launches",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  company {\n    name\n    founder\n    founded\n    summary\n  }\n  launchesPast(limit: 3) {\n    mission_name\n    launch_date_local\n    launch_success\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{SPACEX_BASE_URL}}",
+              "host": [
+                "{{SPACEX_BASE_URL}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has company and launches data', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.have.property('company');",
+                  "    pm.expect(response.data).to.have.property('launchesPast');",
+                  "    pm.expect(response.data.company).to.be.an('object');",
+                  "    pm.expect(response.data.launchesPast).to.be.an('array');",
                   "});"
                 ]
               }

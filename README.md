@@ -202,7 +202,7 @@ Included Postman collections with requests covered by tests:
 - `users-api.json`: user endpoints
 - `recipes-api.json`: recipe endpoints
 - `graphql-api.json`: users and recipes graphql methods
-- `fake-api.json`: collection of different api endpoints for fake data 
+- `fake-api.json`: collection of different api and graphql endpoints for fake data 
 
 
 Import these collections into Postman to test the API endpoints.
