@@ -32,5 +32,19 @@ services:
       - bun install
     start:
       - bun dev
-      - open http://localhost:3000/docs
-      - open http://localhost:3000/graphql
+      - sleep 10 && open http://localhost:3000/docs
+      - sleep 10 && open http://localhost:3000/graphql
+
+  golde-example-website:
+    port: 3005
+    cloneFrom: https://github.com/Andriiklymiuk/golden-example-website.git
+    environment:
+      - NEXT_PUBLIC_API_KEY=your-api-key-here
+    depends_on_services:
+      - name: golder-example
+        envAlias: NEXT_PUBLIC_BACKEND_URL
+    beforeStart:
+      - bun install
+    start:
+      - bun dev
+      - sleep 10 && open http://localhost:3005

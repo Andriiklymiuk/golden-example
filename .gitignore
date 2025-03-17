@@ -6,3 +6,4 @@ node_modules/
 # Added by corgi cli
 corgi_services/db_services
 corgi_services/*
+golden-example-website
