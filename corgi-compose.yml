@@ -21,6 +21,7 @@ db_services:
 
 services:
   golder-example:
+    port: 3000
     path: .
     depends_on_db:
       - name: golden-retriever-example-db
