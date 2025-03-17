@@ -85,7 +85,8 @@ app.get(
           apiKey: {
             type: 'apiKey',
             in: 'header',
-            name: 'x-api-key'
+            name: 'x-api-key',
+            description: 'API key for authentication'
           }
         }
       },
