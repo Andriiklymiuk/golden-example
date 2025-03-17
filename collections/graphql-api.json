@@ -93,7 +93,7 @@
               "graphql": {
                 "query": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    recipes {\n      id\n      title\n      ingredients\n      instructions\n    }\n  }\n}",
                 "variables": {
-                  "id": "test-user-123"
+                  "id": "123e4567-e89b-12d3-a456-426614174000"
                 }
               }
             },
@@ -121,7 +121,7 @@
                   "    const response = pm.response.json();",
                   "    pm.expect(response.data).to.have.property('user');",
                   "    pm.expect(response.data.user).to.be.an('object');",
-                  "    pm.expect(response.data.user.id).to.equal('test-user-123');",
+                  "    pm.expect(response.data.user.id).to.equal('123e4567-e89b-12d3-a456-426614174000');",
                   "});",
                   "",
                   "pm.test('User has correct structure', function() {",
@@ -224,7 +224,7 @@
               "graphql": {
                 "query": "mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {\n  updateUser(id: $id, input: $input) {\n    id\n    name\n    email\n    updatedAt\n  }\n}",
                 "variables": {
-                  "id": "test-user-123",
+                  "id": "123e4567-e89b-12d3-a456-426614174000",
                   "input": {
                     "name": "John Updated",
                     "email": "john.updated@example.com"
@@ -256,7 +256,7 @@
                   "    const response = pm.response.json();",
                   "    pm.expect(response.data).to.have.property('updateUser');",
                   "    const user = response.data.updateUser;",
-                  "    pm.expect(user.id).to.equal('test-user-123');",
+                  "    pm.expect(user.id).to.equal('123e4567-e89b-12d3-a456-426614174000');",
                   "    pm.expect(user.name).to.equal('John Updated');",
                   "    pm.expect(user.email).to.equal('john.updated@example.com');",
                   "});"
@@ -410,7 +410,7 @@
               "graphql": {
                 "query": "query GetRecipe($id: ID!) {\n  recipe(id: $id) {\n    id\n    title\n    ingredients\n    instructions\n    createdAt\n    updatedAt\n    user {\n      id\n      name\n    }\n  }\n}",
                 "variables": {
-                  "id": "recipe-123"
+                  "id": "550e8400-e29b-41d4-a716-446655440000"
                 }
               }
             },
@@ -438,7 +438,7 @@
                   "    const response = pm.response.json();",
                   "    pm.expect(response.data).to.have.property('recipe');",
                   "    pm.expect(response.data.recipe).to.be.an('object');",
-                  "    pm.expect(response.data.recipe.id).to.equal('recipe-123');",
+                  "    pm.expect(response.data.recipe.id).to.equal('550e8400-e29b-41d4-a716-446655440000');",
                   "});",
                   "",
                   "pm.test('Recipe has correct structure', function() {",
@@ -476,7 +476,7 @@
                 "query": "mutation CreateRecipe($input: CreateRecipeInput!) {\n  createRecipe(input: $input) {\n    id\n    title\n    ingredients\n    instructions\n    createdAt\n    user {\n      id\n      name\n    }\n  }\n}",
                 "variables": {
                   "input": {
-                    "userId": "test-user-123",
+                    "userId": "123e4567-e89b-12d3-a456-426614174000",
                     "title": "Spaghetti Carbonara",
                     "ingredients": [
                       "Spaghetti",
@@ -524,7 +524,7 @@
                   "pm.test('Recipe data matches input', function() {",
                   "    const recipe = pm.response.json().data.createRecipe;",
                   "    pm.expect(recipe.ingredients).to.have.lengthOf(5);",
-                  "    pm.expect(recipe.user.id).to.equal('test-user-123');",
+                  "    pm.expect(recipe.user.id).to.equal('123e4567-e89b-12d3-a456-426614174000');",
                   "});"
                 ]
               }
@@ -552,7 +552,7 @@
               "graphql": {
                 "query": "mutation UpdateRecipe($id: ID!, $input: UpdateRecipeInput!) {\n  updateRecipe(id: $id, input: $input) {\n    id\n    title\n    ingredients\n    instructions\n    updatedAt\n  }\n}",
                 "variables": {
-                  "id": "recipe-123",
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
                   "input": {
                     "title": "Updated Carbonara",
                     "ingredients": [
@@ -591,7 +591,7 @@
                   "    const response = pm.response.json();",
                   "    pm.expect(response.data).to.have.property('updateRecipe');",
                   "    const recipe = response.data.updateRecipe;",
-                  "    pm.expect(recipe.id).to.equal('recipe-123');",
+                  "    pm.expect(recipe.id).to.equal('550e8400-e29b-41d4-a716-446655440000');",
                   "    pm.expect(recipe.title).to.equal('Updated Carbonara');",
                   "    pm.expect(recipe.ingredients).to.have.lengthOf(5);",
                   "    pm.expect(recipe.instructions).to.equal('Updated cooking instructions...');",
@@ -624,7 +624,7 @@
               "graphql": {
                 "query": "mutation DeleteRecipe($id: ID!) {\n  deleteRecipe(id: $id)\n}",
                 "variables": {
-                  "id": "recipe-1234"
+                  "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
                 }
               }
             },

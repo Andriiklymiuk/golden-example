@@ -2,10 +2,13 @@ import { Hono } from "hono";
 import { describeRoute } from 'hono-openapi';
 import { validator } from 'hono-openapi/zod';
 import { z } from "zod";
-import { db } from "../db";
-import { User } from "../types";
+import type { DatabaseInterface } from "../db";
 
-const userRoutes = new Hono();
+const userRoutes = new Hono<{
+  Variables: {
+    db: DatabaseInterface
+  }
+}>();
 
 const createUserSchema = z.object({
   name: z.string().min(1),
@@ -48,19 +51,28 @@ userRoutes.get('/',
       }
     }
   }),
-  (c) => {
-    const searchQuery = c.req.query("q")?.toLowerCase();
-    const users = Array.from(db.users.values());
+  async (c) => {
+    const db = c.get('db');
+    const searchQuery = c.req.query("q");
 
-    if (searchQuery) {
-      const filteredUsers = users.filter(
-        (user) =>
-          user.name.toLowerCase().includes(searchQuery) ||
-          user.email.toLowerCase().includes(searchQuery)
-      );
-      return c.json(filteredUsers);
+    try {
+      const users = await db.listUsers();
+
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const filteredUsers = users.filter(
+          (user) =>
+            user.name.toLowerCase().includes(query) ||
+            user.email.toLowerCase().includes(query)
+        );
+        return c.json(filteredUsers);
+      }
+
+      return c.json(users);
+    } catch (error) {
+      console.error("Error listing users:", error);
+      return c.json({ message: "Error listing users" }, 500);
     }
-    return c.json(users);
   }
 );
 
@@ -130,17 +142,16 @@ userRoutes.post('/',
   }),
   validator('json', createUserSchema),
   async (c) => {
+    const db = c.get('db');
     const data = c.req.valid('json');
 
-    const user: User = {
-      id: crypto.randomUUID(),
-      ...data,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    db.users.set(user.id, user);
-    return c.json(user, 201);
+    try {
+      const user = await db.createUser(data);
+      return c.json(user, 201);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return c.json({ message: "Error creating user" }, 500);
+    }
   }
 );
 
@@ -190,14 +201,22 @@ userRoutes.get('/:id',
       }
     }
   }),
-  (c) => {
+  async (c) => {
+    const db = c.get('db');
     const id = c.req.param("id");
-    const user = db.users.get(id);
 
-    if (!user) {
-      return c.json({ message: "User not found" }, 404);
+    try {
+      const user = await db.getUser(id);
+
+      if (!user) {
+        return c.json({ message: "User not found" }, 404);
+      }
+
+      return c.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      return c.json({ message: "Error fetching user" }, 500);
     }
-    return c.json(user);
   }
 );
 
@@ -289,22 +308,22 @@ userRoutes.put('/:id',
   }),
   validator('json', createUserSchema),
   async (c) => {
+    const db = c.get('db');
     const id = c.req.param("id");
-    const user = db.users.get(id);
-
-    if (!user) {
-      return c.json({ message: "User not found" }, 404);
-    }
-
     const data = c.req.valid('json');
-    const updatedUser: User = {
-      ...user,
-      ...data,
-      updatedAt: new Date(),
-    };
 
-    db.users.set(id, updatedUser);
-    return c.json(updatedUser);
+    try {
+      const updatedUser = await db.updateUser(id, data);
+
+      if (!updatedUser) {
+        return c.json({ message: "User not found" }, 404);
+      }
+
+      return c.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return c.json({ message: "Error updating user" }, 500);
+    }
   }
 );
 
@@ -350,16 +369,27 @@ userRoutes.delete('/:id',
       }
     }
   }),
-  (c) => {
+  async (c) => {
+    const db = c.get('db');
     const id = c.req.param("id");
-    const user = db.users.get(id);
 
-    if (!user) {
-      return c.json({ message: "User not found" }, 404);
+    try {
+      const user = await db.getUser(id);
+      if (!user) {
+        return c.json({ message: "User not found" }, 404);
+      }
+
+      const success = await db.deleteUser(id);
+
+      if (success) {
+        return c.json({ message: "User deleted successfully" });
+      } else {
+        return c.json({ message: "Failed to delete user" }, 500);
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return c.json({ message: "Error deleting user" }, 500);
     }
-
-    db.users.delete(id);
-    return c.json({ message: "User deleted successfully" });
   }
 );
 

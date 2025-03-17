@@ -24,11 +24,13 @@ Collections for Golden Retriever | Postman | Thunderclient are in collections fo
 
 1. Clone the repository
 2. Install dependencies:
+
 ```sh
 bun install
 ```
 
 3. Configure environment variables:
+
 ```sh
 # .env
 PORT=3000
@@ -38,11 +40,28 @@ API_KEY=your-api-key
 ### Running the Application
 
 Development mode with hot reload:
+
 ```sh
 bun dev
 ```
 
-The server will start on http://localhost:3000 (or your configured PORT)
+The server will start on http://localhost:3000 (or your configured PORT) with in memory database.
+
+### (optional) Running the Application with corgi
+
+## 0. Install [Corgi](https://github.com/Andriiklymiuk/corgi) with [Homebrew](https://brew.sh) and docker
+
+```bash
+brew install andriiklymiuk/homebrew-tools/corgi
+```
+
+Development mode with hot reload:
+
+```sh
+corgi run
+```
+
+It will run app on http://localhost:3000 and will start local postgres instance.
 
 ## Available Endpoints
 
@@ -63,7 +82,7 @@ GET /api/users
 - List all users
 - Query parameters:
   - q: Search users by name or email
-  
+
 POST /api/users
 - Create a new user
 - Body: { "name": string, "email": string }
@@ -118,6 +137,7 @@ DELETE /api/recipes/:id
 Endpoint: `http://localhost:3000/graphql`
 
 Sample Queries:
+
 ```graphql
 # Get all users with their recipes
 query {
@@ -164,6 +184,7 @@ mutation {
 All REST API endpoints (except GraphQL in development) require authentication using an API key.
 
 Add the following header to your requests:
+
 ```
 x-api-key: your-api-key
 ```
@@ -192,6 +213,7 @@ src/
 ### OpenAPI/Swagger
 
 The API documentation is automatically generated from the route definitions using:
+
 - `hono-openapi` for route documentation
 - `@hono/zod-validator` for request validation
 - Swagger UI for interactive documentation
@@ -199,20 +221,20 @@ The API documentation is automatically generated from the route definitions usin
 ### Testing
 
 Included Postman collections with requests covered by tests:
+
 - `users-api.json`: user endpoints
 - `recipes-api.json`: recipe endpoints
 - `graphql-api.json`: users and recipes graphql methods
-- `fake-api.json`: collection of different api and graphql endpoints for fake data 
-
+- `fake-api.json`: collection of different api and graphql endpoints for fake data
 
 Import these collections into Postman to test the API endpoints.
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 3000 |
-| API_KEY | Authentication key | default-api-key-123 |
+| Variable | Description        | Default             |
+| -------- | ------------------ | ------------------- |
+| PORT     | Server port        | 3000                |
+| API_KEY  | Authentication key | default-api-key-123 |
 
 ## License
 
