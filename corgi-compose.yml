@@ -1,0 +1,35 @@
+name: Golden Retriever example
+description: This is golden retriever example of running hono server with postgres db
+
+useDocker: true
+
+required:
+  bun:
+    why:
+      - For running hono server in goldern-example
+    install:
+      - curl -fsSL https://bun.sh/install | bash
+    checkCmd: bun -v
+
+db_services:
+  golden-retriever-example-db:
+    driver: postgres
+    databaseName: golden
+    user: user
+    password: password
+    port: 5689
+
+services:
+  golder-example:
+    path: .
+    depends_on_db:
+      - name: golden-retriever-example-db
+        envAlias: none
+    environment:
+      - USE_POSTGRES=true
+    beforeStart:
+      - bun install
+    start:
+      - bun dev
+      - open http://localhost:3000/docs
+      - open http://localhost:3000/graphql
