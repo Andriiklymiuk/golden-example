@@ -24,23 +24,39 @@ statusRoutes.get('/',
             schema: {
               type: 'object',
               properties: {
-                redisStatus: {
-                  type: 'string',
-                  enum: ['success', 'failure', 'not connected'],
-                  description: 'Status of the Redis connection'
-                },
-                dbStatus: {
-                  type: 'string',
-                  enum: ['success', 'failure', 'not connected'],
-                  description: 'Status of the database connection'
-                },
-                dbType: {
-                  type: 'string',
-                  enum: ['in-memory', 'postgres'],
-                  description: 'Type of database being used'
+                services: {
+                  type: 'object',
+                  properties: {
+                    redis: {
+                      type: 'object',
+                      properties: {
+                        status: {
+                          type: 'string',
+                          enum: ['success', 'failure', 'not connected'],
+                          description: 'Status of the Redis connection'
+                        }
+                      }
+                    },
+                    postgres: {
+                      type: 'object',
+                      properties: {
+                        status: {
+                          type: 'string',
+                          enum: ['success', 'failure', 'not connected'],
+                          description: 'Status of the database connection'
+                        },
+                        type: {
+                          type: 'string',
+                          enum: ['in-memory', 'postgres'],
+                          description: 'Type of database being used'
+                        }
+                      }
+                    }
+                  },
+                  required: ['redis', 'postgres']
                 }
               },
-              required: ['redisStatus', 'dbStatus', 'dbType']
+              required: ['services']
             }
           }
         }
@@ -105,10 +121,17 @@ statusRoutes.get('/',
     }
 
     const response = {
-      redisStatus,
-      dbStatus,
-      dbType,
+      services: {
+        redis: {
+          status: redisStatus
+        },
+        postgres: {
+          status: dbStatus,
+          type: dbType
+        }
+      }
     };
+
     return c.json(response);
   }
 );
