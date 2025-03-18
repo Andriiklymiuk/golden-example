@@ -13,6 +13,7 @@ Collections for Golden Retriever | Postman | Thunderclient are in collections fo
 - 🔍 Search functionality
 - 🧪 Postman collections included
 - 📦 In-memory database
+- Postgres, redis and nextjs showcase if run with [corgi](https://github.com/Andriiklymiuk/corgi)
 
 ## Setup
 
@@ -47,9 +48,9 @@ bun dev
 
 The server will start on http://localhost:3000 (or your configured PORT) with in memory database.
 
-### (optional) Running the Application with corgi
+### Running the Application with corgi (optional)
 
-## 0. Install [Corgi](https://github.com/Andriiklymiuk/corgi) with [Homebrew](https://brew.sh) and docker
+0. Install [Corgi](https://github.com/Andriiklymiuk/corgi) with [Homebrew](https://brew.sh) and docker
 
 ```bash
 brew install andriiklymiuk/homebrew-tools/corgi
