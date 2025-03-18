@@ -1,0 +1,85 @@
+{
+  "info": {
+    "name": "Status API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "default-api-key-123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/status",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "status"
+          ],
+          "query": []
+        },
+        "body": {}
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an object', function() {",
+              "    const response = pm.response.json();",
+              "    pm.expect(response).to.be.an('object');",
+              "    pm.expect(response).to.not.be.an('array');",
+              "    pm.expect(response).to.not.be.null;",
+              "});",
+              "",
+              "pm.test('Redis status has valid value', function() {",
+              "    const response = pm.response.json();",
+              "    const validStatuses = ['success', 'failure', 'not connected'];",
+              "    pm.expect(response.redisStatus).to.be.a('string');",
+              "    pm.expect(validStatuses).to.include(response.redisStatus, `redisStatus should be one of: ${validStatuses.join(', ')}`);",
+              "});",
+              "",
+              "pm.test('Database status has valid value', function() {",
+              "    const response = pm.response.json();",
+              "    const validStatuses = ['success', 'failure', 'not connected'];",
+              "    pm.expect(response.dbStatus).to.be.a('string');",
+              "    pm.expect(validStatuses).to.include(response.dbStatus, `dbStatus should be one of: ${validStatuses.join(', ')}`);",
+              "});",
+              "",
+              "pm.test('Database type has valid value', function() {",
+              "    const response = pm.response.json();",
+              "    const validDbTypes = ['internal', 'postgres'];",
+              "    pm.expect(response.dbType).to.be.a('string');",
+              "    pm.expect(validDbTypes).to.include(response.dbType, `dbType should be one of: ${validDbTypes.join(', ')}`);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

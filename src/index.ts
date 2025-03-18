@@ -8,13 +8,20 @@ import { apiReference } from '@scalar/hono-api-reference';
 import { auth } from "./middlewares/auth";
 import { userRoutes } from "./routes/users";
 import { recipeRoutes } from "./routes/recipes";
+import { statusRoutes } from "./routes/status";
 import { config } from "./config";
 import { typeDefs } from './graphql/schema';
 import { resolvers } from './graphql/resolvers';
 import type { GraphQLContext } from './graphql/context';
 import { getDb, AppDatabase } from './db';
+import { initializeRedis, redisClient, RedisClient } from './redis';
 
-const app = new Hono<{ Variables: { db: AppDatabase } }>();
+const app = new Hono<{
+  Variables: {
+    db: AppDatabase;
+    redis: RedisClient | null;
+  }
+}>();
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -44,12 +51,22 @@ query {
 });
 
 let db: AppDatabase;
+let redis: RedisClient | null = null;
+
 (async () => {
   try {
     db = await getDb();
     console.log('Database initialized successfully');
+
+    const redisConnected = await initializeRedis();
+    if (redisConnected) {
+      redis = redisClient;
+    } else {
+      console.log('Redis initialization failed, proceeding without Redis');
+      redis = null;
+    }
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    console.error('Failed to initialize application:', error);
     process.exit(1);
   }
 })();
@@ -62,6 +79,7 @@ app.use("*", async (c, next) => {
     return c.json({ error: 'Database not initialized' }, 500);
   }
   c.set('db', db);
+  c.set('redis', redis);
   await next();
 });
 
@@ -105,6 +123,7 @@ app.get(
 
 app.route("/api/users", userRoutes);
 app.route("/api/recipes", recipeRoutes);
+app.route("/api/status", statusRoutes);
 
 app.all('/graphql', async (c) => {
   if (!db) {

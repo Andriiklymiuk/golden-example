@@ -18,6 +18,10 @@ db_services:
     user: user
     password: password
     port: 5689
+  golden-retriever-example-redis:
+    driver: redis
+    user: user
+    port: 6399
 
 services:
   golder-example:
