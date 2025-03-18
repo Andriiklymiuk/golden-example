@@ -1,5 +1,5 @@
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import * as schema from './schema';
 import { User, Recipe } from './types';
@@ -18,7 +18,7 @@ export interface DatabaseInterface {
   deleteRecipe: (id: string) => Promise<boolean>;
 }
 
-class InMemoryDB implements DatabaseInterface {
+export class InMemoryDB implements DatabaseInterface {
   private users: Map<string, User>;
   private recipes: Map<string, Recipe>;
 
@@ -156,6 +156,7 @@ class DrizzleDB implements DatabaseInterface {
       throw error;
     }
   }
+
   async getUser(id: string): Promise<User | undefined> {
     const result = await this.query(
       'SELECT * FROM users WHERE id = $1 LIMIT 1',
@@ -342,42 +343,65 @@ class DrizzleDB implements DatabaseInterface {
   }
 }
 
-let dbInstance: DatabaseInterface | null = null;
+export const postgresPool = new Pool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_NAME,
+  port: Number(process.env.DB_PORT),
+  password: process.env.DB_PASSWORD,
+});
 
-async function initializeDatabase(): Promise<DatabaseInterface> {
-  if (process.env.USE_POSTGRES === 'true') {
-    console.log('Initializing PostgreSQL database');
+let hasLoggedInitialDbError = false;
 
-    const pool = new Pool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      database: process.env.DB_NAME,
-      port: Number(process.env.DB_PORT),
-      password: process.env.DB_PASSWORD,
-    });
+postgresPool.on('error', (err) => {
+  if (!hasLoggedInitialDbError) {
+    console.error('Postgres Client Error:', err);
+    hasLoggedInitialDbError = true;
+  }
+});
 
-    const drizzleDb = drizzle(pool, { schema });
+postgresPool.on('connect', () => {
+  hasLoggedInitialDbError = false;
+  console.log('Postgres Client Connected');
+});
 
+async function initializePostgres(): Promise<DatabaseInterface | null> {
+  try {
+    const client = await postgresPool.connect();
+    client.release();
+    const drizzleDb = drizzle(postgresPool, { schema });
+    await migrate(drizzleDb, { migrationsFolder: './drizzle' });
+    console.log('Postgres migrations completed successfully');
+    return new DrizzleDB(drizzleDb, postgresPool);
+  } catch (error) {
+    console.log('Postgres initialization failed, falling back to in-memory DB');
+    return null;
+  }
+}
+
+async function checkPostgresConnection(currentDb: DatabaseInterface | null): Promise<DatabaseInterface> {
+  if (currentDb && !(currentDb instanceof InMemoryDB)) {
     try {
-      await migrate(drizzleDb, { migrationsFolder: './drizzle' });
-      console.log('Migrations completed successfully');
+      await currentDb.listUsers();
+      return currentDb;
     } catch (error) {
-      console.error('Migration failed:', error);
-      console.warn('Continuing without migrations. This may cause issues if the database schema is not set up correctly.');
+      console.error('Existing Postgres connection failed:', error);
     }
+  }
 
-    return new DrizzleDB(drizzleDb, pool);
-  } else {
-    console.log('Initializing in-memory database');
+  try {
+    const client = await postgresPool.connect();
+    client.release();
+    const drizzleDb = drizzle(postgresPool, { schema });
+    await migrate(drizzleDb, { migrationsFolder: './drizzle' });
+    console.log('Postgres reconnected and migrations applied');
+    return new DrizzleDB(drizzleDb, postgresPool);
+  } catch (error) {
+    hasLoggedInitialDbError = false;
+    console.log('Postgres connection attempt failed, using in-memory DB');
     return new InMemoryDB();
   }
 }
 
-export async function getDb(): Promise<DatabaseInterface> {
-  if (!dbInstance) {
-    dbInstance = await initializeDatabase();
-  }
-  return dbInstance;
-}
-
+export { initializePostgres, checkPostgresConnection };
 export type AppDatabase = DatabaseInterface;

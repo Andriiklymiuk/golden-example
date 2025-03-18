@@ -13,7 +13,7 @@ import { config } from "./config";
 import { typeDefs } from './graphql/schema';
 import { resolvers } from './graphql/resolvers';
 import type { GraphQLContext } from './graphql/context';
-import { getDb, AppDatabase } from './db';
+import { initializePostgres, AppDatabase, InMemoryDB } from './db';
 import { initializeRedis, redisClient, RedisClient } from './redis';
 
 const app = new Hono<{
@@ -50,12 +50,12 @@ query {
   }
 });
 
-let db: AppDatabase;
+let db: AppDatabase | null = null;
 let redis: RedisClient | null = null;
 
 (async () => {
   try {
-    db = await getDb();
+    db = await initializePostgres() || new InMemoryDB();
     console.log('Database initialized successfully');
 
     const redisConnected = await initializeRedis();

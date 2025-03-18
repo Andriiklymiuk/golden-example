@@ -19,7 +19,7 @@ db_services:
     password: password
     port: 5689
   golden-retriever-example-redis:
-    driver: redis
+    driver: redis-server
     user: user
     port: 6399
 
@@ -30,8 +30,12 @@ services:
     depends_on_db:
       - name: golden-retriever-example-db
         envAlias: none
-    environment:
-      - USE_POSTGRES=true
+      - name: golden-retriever-example-redis
+        envAlias: none
+    depends_on_services:
+      - name: golder-example
+        envAlias: baseUrl
+        suffix: /api
     beforeStart:
       - bun install
     start:
