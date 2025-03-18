@@ -125,7 +125,7 @@ app.route("/api/users", userRoutes);
 app.route("/api/recipes", recipeRoutes);
 app.route("/api/status", statusRoutes);
 
-app.all('/graphql', async (c) => {
+app.all('/api/graphql', async (c) => {
   if (!db) {
     return c.json({ error: 'Database not initialized' }, 500);
   }

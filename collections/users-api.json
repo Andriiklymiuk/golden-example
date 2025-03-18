@@ -5,12 +5,12 @@
   },
   "variable": [
     {
-      "key": "baseUrl",
+      "key": "BASE_URL",
       "value": "http://localhost:3000/api",
       "type": "string"
     },
     {
-      "key": "apiKey",
+      "key": "API_KEY",
       "value": "default-api-key-123",
       "type": "string"
     },
@@ -28,14 +28,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/users",
+          "raw": "{{BASE_URL}}/users",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "users"
@@ -80,14 +80,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/users?q=john",
+          "raw": "{{BASE_URL}}/users?q=john",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "users"
@@ -136,7 +136,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           },
           {
@@ -146,9 +146,9 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/users",
+          "raw": "{{BASE_URL}}/users",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "users"
@@ -196,14 +196,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/users/{{userId}}",
+          "raw": "{{BASE_URL}}/users/{{userId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "users",
@@ -241,7 +241,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           },
           {
@@ -251,9 +251,9 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/users/{{userId}}",
+          "raw": "{{BASE_URL}}/users/{{userId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "users",
@@ -298,14 +298,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/users/{{userId}}",
+          "raw": "{{BASE_URL}}/users/{{userId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "users",

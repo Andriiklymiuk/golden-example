@@ -1,16 +1,16 @@
 {
   "info": {
-    "name": "Status API",
+    "name": "_ status API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
-      "key": "baseUrl",
+      "key": "BASE_URL",
       "value": "http://localhost:3000/api",
       "type": "string"
     },
     {
-      "key": "apiKey",
+      "key": "API_KEY",
       "value": "default-api-key-123",
       "type": "string"
     }
@@ -23,14 +23,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/status",
+          "raw": "{{BASE_URL}}/status",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "status"

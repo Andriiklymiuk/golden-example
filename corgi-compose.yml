@@ -27,6 +27,7 @@ services:
   golder-example:
     port: 3000
     path: .
+    copyEnvFromFilePath: .env-api-key
     depends_on_db:
       - name: golden-retriever-example-db
         envAlias: none
@@ -34,7 +35,7 @@ services:
         envAlias: none
     depends_on_services:
       - name: golder-example
-        envAlias: baseUrl
+        envAlias: BASE_URL
         suffix: /api
     beforeStart:
       - bun install
@@ -46,8 +47,8 @@ services:
   golde-example-website:
     port: 3005
     cloneFrom: https://github.com/Andriiklymiuk/golden-example-website.git
-    environment:
-      - NEXT_PUBLIC_API_KEY=your-api-key-here
+    path: ./golden-example-website
+    copyEnvFromFilePath: .env-api-key
     depends_on_services:
       - name: golder-example
         envAlias: NEXT_PUBLIC_BACKEND_URL

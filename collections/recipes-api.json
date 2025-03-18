@@ -5,12 +5,12 @@
   },
   "variable": [
     {
-      "key": "baseUrl",
+      "key": "BASE_URL",
       "value": "http://localhost:3000/api",
       "type": "string"
     },
     {
-      "key": "apiKey",
+      "key": "API_KEY",
       "value": "default-api-key-123",
       "type": "string"
     },
@@ -33,14 +33,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes",
+          "raw": "{{BASE_URL}}/recipes",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes"
@@ -75,7 +75,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           },
           {
@@ -85,9 +85,9 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes",
+          "raw": "{{BASE_URL}}/recipes",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes"
@@ -130,14 +130,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "raw": "{{BASE_URL}}/recipes/{{recipeId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes",
@@ -176,14 +176,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes?q=carbonara",
+          "raw": "{{BASE_URL}}/recipes?q=carbonara",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes"
@@ -229,14 +229,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes?userId={{userId}}",
+          "raw": "{{BASE_URL}}/recipes?userId={{userId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes"
@@ -282,7 +282,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           },
           {
@@ -292,9 +292,9 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "raw": "{{BASE_URL}}/recipes/{{recipeId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes",
@@ -337,14 +337,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "raw": "{{BASE_URL}}/recipes/{{recipeId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes",
@@ -384,14 +384,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "raw": "{{BASE_URL}}/recipes/{{recipeId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes",
@@ -423,14 +423,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes/{{recipeId}}",
+          "raw": "{{BASE_URL}}/recipes/{{recipeId}}",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes",
@@ -465,14 +465,14 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "{{apiKey}}",
+            "value": "{{API_KEY}}",
             "type": "text"
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/recipes",
+          "raw": "{{BASE_URL}}/recipes",
           "host": [
-            "{{baseUrl}}"
+            "{{BASE_URL}}"
           ],
           "path": [
             "recipes"

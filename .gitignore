@@ -1,6 +1,7 @@
 # deps
 node_modules/
 .env*
+!.env-api-key
 .DS_Store
 
 # Added by corgi cli

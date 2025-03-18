@@ -61,7 +61,7 @@ Development mode with hot reload:
 corgi run
 ```
 
-It will run app on http://localhost:3000 and will start local postgres instance.
+It will run app on http://localhost:3000 and will start local postgres and redis instances with docker.
 
 ## Available Endpoints
 
@@ -69,7 +69,7 @@ It will run app on http://localhost:3000 and will start local postgres instance.
 
 - OpenAPI Documentation: http://localhost:3000/openapi
 - Swagger UI: http://localhost:3000/docs
-- GraphQL Playground: http://localhost:3000/graphql
+- GraphQL Playground: http://localhost:3000/api/graphql
 
 ### REST API Endpoints
 
@@ -134,7 +134,7 @@ DELETE /api/recipes/:id
 
 ### GraphQL API
 
-Endpoint: `http://localhost:3000/graphql`
+Endpoint: `http://localhost:3000/api/graphql`
 
 Sample Queries:
 
