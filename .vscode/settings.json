@@ -1,0 +1,6 @@
+{
+  "goldenRetriever.collectionsPaths": [
+    "collections",
+    "golden-example-website/collections"
+  ]
+}
