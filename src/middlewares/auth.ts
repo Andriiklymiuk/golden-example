@@ -3,7 +3,7 @@ import { config } from "../config";
 
 export async function auth(c: Context, next: Next) {
 
-  if (process.env.NODE_ENV === 'development' && c.req.path === '/graphql') {
+  if (process.env.NODE_ENV === 'development' && c.req.path === '/api/graphql') {
     return next();
   }
   if (process.env.NODE_ENV === 'development' && c.req.path === '/openapi') {

@@ -34,7 +34,7 @@ bun install
 
 ```sh
 # .env
-PORT=3000
+PORT=3009
 API_KEY=your-api-key
 ```
 
@@ -46,7 +46,7 @@ Development mode with hot reload:
 bun dev
 ```
 
-The server will start on http://localhost:3000 (or your configured PORT) with in memory database.
+The server will start on http://localhost:3009 (or your configured PORT) with in memory database.
 
 ### Running the Application with corgi (optional)
 
@@ -62,15 +62,15 @@ Development mode with hot reload:
 corgi run
 ```
 
-It will run app on http://localhost:3000 and will start local postgres and redis instances with docker.
+It will run app on http://localhost:3009 and will start local postgres and redis instances with docker.
 
 ## Available Endpoints
 
 ### Documentation
 
-- OpenAPI Documentation: http://localhost:3000/openapi
-- Swagger UI: http://localhost:3000/docs
-- GraphQL Playground: http://localhost:3000/api/graphql
+- OpenAPI Documentation: http://localhost:3009/openapi
+- Swagger UI: http://localhost:3009/docs
+- GraphQL Playground: http://localhost:3009/api/graphql
 
 ### REST API Endpoints
 
@@ -135,7 +135,7 @@ DELETE /api/recipes/:id
 
 ### GraphQL API
 
-Endpoint: `http://localhost:3000/api/graphql`
+Endpoint: `http://localhost:3009/api/graphql`
 
 Sample Queries:
 
@@ -234,7 +234,7 @@ Import these collections into Postman to test the API endpoints.
 
 | Variable | Description        | Default             |
 | -------- | ------------------ | ------------------- |
-| PORT     | Server port        | 3000                |
+| PORT     | Server port        | 3009                |
 | API_KEY  | Authentication key | default-api-key-123 |
 
 ## License

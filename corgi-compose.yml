@@ -25,7 +25,7 @@ db_services:
 
 services:
   golder-example:
-    port: 3000
+    port: 3009
     path: .
     copyEnvFromFilePath: .env-api-key
     depends_on_db:
@@ -41,8 +41,8 @@ services:
       - bun install
     start:
       - bun dev
-      - sleep 10 && open http://localhost:3000/docs
-      - sleep 10 && open http://localhost:3000/graphql
+      - sleep 10 && open http://localhost:3009/docs
+      - sleep 10 && open http://localhost:3009/api/graphql
 
   golde-example-website:
     port: 3005
@@ -52,6 +52,7 @@ services:
     depends_on_services:
       - name: golder-example
         envAlias: NEXT_PUBLIC_BACKEND_URL
+        suffix: /api
     beforeStart:
       - bun install
     start:
