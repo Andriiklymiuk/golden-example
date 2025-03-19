@@ -8,4 +8,5 @@ node_modules/
 corgi_services/db_services
 corgi_services/*
 golden-example-website
+
 collections/.tmp
